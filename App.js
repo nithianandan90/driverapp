@@ -1,20 +1,37 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { FlatList, Image, StyleSheet, Text, View, } from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import OrderDelivery from './src/screens/OrderDelivery';
+import { NavigationContainer } from '@react-navigation/native';
+import Navigation from './src/navigation';
+import {Amplify} from 'aws-amplify';
+import awsconfig from './src/aws-exports';
+import {withAuthenticator} from 'aws-amplify-react-native';
+import AuthContextProvider from './src/contexts/AuthContext';
+import OrderContextProvider from './src/contexts/OrderContext';
+import '@azure/core-asynciterator-polyfill'; 
 
-export default function App() {
+
+Amplify.configure({...awsconfig, Analytics: {disabled: true}});
+
+
+
+function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+  <GestureHandlerRootView style={{flex:1}}>
+    <NavigationContainer>
+        <AuthContextProvider>
+          <OrderContextProvider>
+             <Navigation/>
+          </OrderContextProvider>
+        </AuthContextProvider>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
 
+export default withAuthenticator(App);
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  
 });
